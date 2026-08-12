@@ -1,8 +1,10 @@
 package scheduler
 
 import (
+	"fmt"
 	"mini-scheduler/graph"
 	"mini-scheduler/task"
+	"time"
 )
 
 func GetReadyTasks(
@@ -38,4 +40,23 @@ func GetReadyTasks(
 	}
 
 	return readyTasks
+}
+func Run(
+	g *graph.Graph,
+	tasks map[string]*task.Task,
+) {
+	for {
+		readyTasks := GetReadyTasks(g, tasks)
+		if len(readyTasks) == 0 {
+			break
+		}
+		// Process the ready tasks (implementation for task execution would go here)
+		for _, taskName := range readyTasks {
+			tasks[taskName].Status = task.RUNNING
+			fmt.Println("task is executing ...")
+			time.Sleep(300 * time.Millisecond) // Simulate task execution time
+			tasks[taskName].Status = task.SUCCESS
+			fmt.Printf("Task %s completed successfully\n", taskName)
+		}
+	}
 }

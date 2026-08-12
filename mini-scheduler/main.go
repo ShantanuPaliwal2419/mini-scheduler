@@ -28,24 +28,13 @@ func main() {
 		"D": {Name: "D", Status: task.PENDING},
 	}
 
-	// Initially only A should be ready.
-	fmt.Println("Ready:", scheduler.GetReadyTasks(g, tasks))
+	fmt.Println("Starting scheduler...")
 
-	// A completes.
-	tasks["A"].Status = task.SUCCESS
+	scheduler.Run(g, tasks)
 
-	// Now B and C should be ready.
-	fmt.Println("After A:", scheduler.GetReadyTasks(g, tasks))
+	fmt.Println("\nFinal task states:")
 
-	// Only B completes.
-	tasks["B"].Status = task.SUCCESS
-
-	// D should NOT be ready because C hasn't completed.
-	fmt.Println("After B:", scheduler.GetReadyTasks(g, tasks))
-
-	// C completes.
-	tasks["C"].Status = task.SUCCESS
-
-	// Now D should be ready.
-	fmt.Println("After C:", scheduler.GetReadyTasks(g, tasks))
+	for name, t := range tasks {
+		fmt.Printf("%s: %v\n", name, t.Status)
+	}
 }
