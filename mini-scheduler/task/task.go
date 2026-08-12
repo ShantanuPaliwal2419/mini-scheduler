@@ -10,5 +10,7 @@ const (
 
 type Status string
 type Task struct {
-	id string
+	Name     string
+	Status   Status
+	Priority int
 }
