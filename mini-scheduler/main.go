@@ -3,45 +3,59 @@ package main
 import (
 	"fmt"
 
-	"mini-scheduler/queue"
+	"mini-scheduler/graph"
+	"mini-scheduler/scheduler"
 	"mini-scheduler/task"
 )
 
 func main() {
-	q := queue.NewPriorityQueue()
+	g := graph.NewGraph()
 
-	a := &task.Task{
-		Name:     "A",
-		Priority: 5,
+	// A → B
+	// A → C
+	// B → D
+	// C → D
+
+	g.Adddependency("A", "B")
+	g.Adddependency("A", "C")
+	g.Adddependency("B", "D")
+	g.Adddependency("C", "D")
+
+	tasks := map[string]*task.Task{
+		"A": {
+			Name:     "A",
+			Status:   task.PENDING,
+			Priority: 1,
+		},
+		"B": {
+			Name:     "B",
+			Status:   task.PENDING,
+			Priority: 5,
+		},
+		"C": {
+			Name:     "C",
+			Status:   task.PENDING,
+			Priority: 10,
+		},
+		"D": {
+			Name:     "D",
+			Status:   task.PENDING,
+			Priority: 1,
+		},
 	}
 
-	b := &task.Task{
-		Name:     "B",
-		Priority: 10,
-	}
+	fmt.Println("Starting scheduler...")
 
-	c := &task.Task{
-		Name:     "C",
-		Priority: 3,
-	}
+	scheduler.Run(g, tasks)
 
-	q.Push(a)
-	q.Push(b)
-	q.Push(c)
+	fmt.Println("\nFinal status:")
 
-	fmt.Println("Queue length:", q.Len())
-
-	for q.Len() > 0 {
-		t := q.Pop()
-		fmt.Printf("Executing: %s | Priority: %d\n", t.Name, t.Priority)
-	}
-
-	fmt.Println("Queue length after Pop:", q.Len())
-
-	// Test empty queue
-	t := q.Pop()
-
-	if t == nil {
-		fmt.Println("Empty queue: Pop returned nil")
+	for name, t := range tasks {
+		fmt.Printf(
+			"%s -> status=%d priority=%d\n",
+			name,
+			t.Status,
+			t.Priority,
+		)
 	}
 }

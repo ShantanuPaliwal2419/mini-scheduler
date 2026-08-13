@@ -3,6 +3,7 @@ package scheduler
 import (
 	"fmt"
 	"mini-scheduler/graph"
+	"mini-scheduler/queue"
 	"mini-scheduler/task"
 	"time"
 )
@@ -50,13 +51,20 @@ func Run(
 		if len(readyTasks) == 0 {
 			break
 		}
-		// Process the ready tasks (implementation for task execution would go here)
+		// pushing ready tasks to the priority queue
+		pq := queue.NewPriorityQueue()
 		for _, taskName := range readyTasks {
-			tasks[taskName].Status = task.RUNNING
+			pq.Push(tasks[taskName])
+		}
+		// Process the ready tasks (implementation for task execution would go here)
+		for pq.Len() != 0 {
+			t := pq.Pop()
+			t.Status = task.RUNNING
 			fmt.Println("task is executing ...")
+			fmt.Printf("Task %s is executing... (priority=%d)\n", t.Name, t.Priority)
 			time.Sleep(300 * time.Millisecond) // Simulate task execution time
-			tasks[taskName].Status = task.SUCCESS
-			fmt.Printf("Task %s completed successfully\n", taskName)
+			t.Status = task.SUCCESS
+			fmt.Printf("Task %s completed successfully\n", t.Name)
 		}
 	}
 }
