@@ -8,7 +8,7 @@ import (
 	"mini-scheduler/task"
 )
 
-func Execute(tasks map[string]*task.Task) {
+func Execute(tasks []*task.Task) {
 	var wg sync.WaitGroup
 
 	for _, t := range tasks {
@@ -16,6 +16,7 @@ func Execute(tasks map[string]*task.Task) {
 
 		go func(t *task.Task) {
 			defer wg.Done()
+			start := time.Now()
 
 			t.Status = task.RUNNING
 
@@ -28,10 +29,11 @@ func Execute(tasks map[string]*task.Task) {
 			time.Sleep(300 * time.Millisecond)
 
 			t.Status = task.SUCCESS
-
+			t.DurationMs = time.Since(start).Milliseconds()
 			fmt.Printf(
-				"Task %s completed\n",
+				"Task %s completed\n duration=%dms\n ",
 				t.Name,
+				t.DurationMs,
 			)
 		}(t)
 	}

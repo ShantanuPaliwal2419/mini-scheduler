@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"mini-scheduler/graph"
+	"mini-scheduler/scheduler"
 
-	"mini-scheduler/executer"
 	"mini-scheduler/task"
 )
 
@@ -47,16 +47,17 @@ func main() {
 
 	fmt.Println("Starting executor...")
 
-	executor.Execute(tasks)
+	scheduler.Run(g, tasks)
 
 	fmt.Println("\nFinal status:")
 
 	for _, t := range tasks {
 		fmt.Printf(
-			"%s -> status=%v priority=%d\n",
+			"%s -> status=%v priority=%d duration=%dms\n",
 			t.Name,
 			t.Status,
 			t.Priority,
+			t.DurationMs,
 		)
 	}
 }

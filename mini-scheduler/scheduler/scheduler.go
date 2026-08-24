@@ -1,11 +1,10 @@
 package scheduler
 
 import (
-	"fmt"
+	executor "mini-scheduler/executer"
 	"mini-scheduler/graph"
 	"mini-scheduler/queue"
 	"mini-scheduler/task"
-	"time"
 )
 
 func GetReadyTasks(
@@ -56,15 +55,13 @@ func Run(
 		for _, taskName := range readyTasks {
 			pq.Push(tasks[taskName])
 		}
+		var readytasks []*task.Task
 		// Process the ready tasks (implementation for task execution would go here)
 		for pq.Len() != 0 {
 			t := pq.Pop()
-			t.Status = task.RUNNING
-			fmt.Println("task is executing ...")
-			fmt.Printf("Task %s is executing... (priority=%d)\n", t.Name, t.Priority)
-			time.Sleep(300 * time.Millisecond) // Simulate task execution time
-			t.Status = task.SUCCESS
-			fmt.Printf("Task %s completed successfully\n", t.Name)
+			readytasks = append(readytasks, t)
 		}
+		executor.Execute(readytasks)
+
 	}
 }
